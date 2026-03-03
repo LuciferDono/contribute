@@ -1,0 +1,62 @@
+name: Bug Report
+description: A phase gave incorrect instructions or produced wrong behavior
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Which phase?
+      options:
+        - discover
+        - analyze
+        - work
+        - test
+        - submit
+        - review
+        - pr-review
+        - release
+        - triage
+        - sync
+        - cleanup
+        - auto-detection (no args)
+        - SKILL.md (core rules)
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did the AI do? What should it have done instead?
+      placeholder: |
+        The AI did X when running /contribute test.
+        It should have done Y instead because Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repo-context
+    attributes:
+      label: Target repo (if applicable)
+      description: Which repo/issue were you contributing to when this happened?
+      placeholder: https://github.com/owner/repo/issues/123
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which AI tool?
+      options:
+        - Claude Code
+        - Cursor
+        - Antigravity
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Paste the AI's output that shows the problem. Redact any sensitive info.
+      render: shell

@@ -1,0 +1,36 @@
+name: Feature Request
+description: Suggest an improvement or new capability
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: What area does this affect?
+      options:
+        - Existing phase improvement
+        - New phase
+        - New language support
+        - Agent improvement
+        - Core rules change
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the improvement
+      description: What should change and why?
+      placeholder: |
+        Currently the test phase does X.
+        It would be better if it did Y because Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered other approaches?

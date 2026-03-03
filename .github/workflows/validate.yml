@@ -1,0 +1,129 @@
+name: Validate Plugin
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate plugin.json
+        run: |
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/plugin.json') as f:
+              data = json.load(f)
+          required = ['name', 'version', 'description']
+          missing = [k for k in required if k not in data]
+          if missing:
+              print(f'Missing required fields: {missing}')
+              sys.exit(1)
+          print(f'Valid: {data[\"name\"]} v{data[\"version\"]}')
+          "
+
+      - name: Check all phase files exist
+        run: |
+          phases=(
+            discover analyze work test submit review
+            pr-review release triage sync cleanup
+          )
+          missing=0
+          for phase in "${phases[@]}"; do
+            file="skills/contribute/references/phase-${phase}.md"
+            if [ ! -f "$file" ]; then
+              echo "MISSING: $file"
+              missing=$((missing + 1))
+            else
+              echo "OK: $file"
+            fi
+          done
+          if [ $missing -gt 0 ]; then
+            echo "$missing phase file(s) missing"
+            exit 1
+          fi
+
+      - name: Check required files exist
+        run: |
+          files=(
+            "skills/contribute/SKILL.md"
+            "agents/deep-reviewer.md"
+            "agents/issue-scout.md"
+            "commands/contribute.md"
+            ".claude-plugin/plugin.json"
+            "README.md"
+            "LICENSE"
+          )
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "MISSING: $file"
+              exit 1
+            fi
+            echo "OK: $file"
+          done
+
+      - name: Validate YAML frontmatter in markdown files
+        run: |
+          python3 -c "
+          import glob, sys
+
+          errors = 0
+          for pattern in ['skills/**/*.md', 'agents/*.md', 'commands/*.md']:
+              for path in glob.glob(pattern, recursive=True):
+                  with open(path) as f:
+                      content = f.read()
+                  if not content.startswith('---'):
+                      print(f'MISSING FRONTMATTER: {path}')
+                      errors += 1
+                      continue
+                  end = content.index('---', 3)
+                  frontmatter = content[3:end].strip()
+                  if 'name:' not in frontmatter and 'description:' not in frontmatter:
+                      print(f'INCOMPLETE FRONTMATTER: {path}')
+                      errors += 1
+                  else:
+                      print(f'OK: {path}')
+
+          if errors:
+              print(f'{errors} frontmatter error(s)')
+              sys.exit(1)
+          "
+
+      - name: Check internal markdown references resolve
+        run: |
+          python3 -c "
+          import re, os, sys
+
+          errors = 0
+          skill_path = 'skills/contribute/SKILL.md'
+          with open(skill_path) as f:
+              content = f.read()
+
+          links = re.findall(r'\[.*?\]\(((?!http)[^)]+)\)', content)
+          for link in links:
+              resolved = os.path.normpath(os.path.join('skills/contribute', link))
+              if not os.path.exists(resolved):
+                  print(f'BROKEN LINK in SKILL.md: {link} -> {resolved}')
+                  errors += 1
+              else:
+                  print(f'OK: {link}')
+
+          if errors:
+              print(f'{errors} broken link(s)')
+              sys.exit(1)
+          "
+
+      - name: Check SKILL.md line count
+        run: |
+          skill_lines=$(wc -l < skills/contribute/SKILL.md)
+          echo "SKILL.md: $skill_lines lines"
+          if [ "$skill_lines" -gt 250 ]; then
+            echo "WARNING: SKILL.md exceeds 250 lines ($skill_lines). Consider moving content to references/."
+          fi
+
+          total=$(find skills/contribute/references -name '*.md' -exec cat {} + | wc -l)
+          echo "Total reference lines: $total"
