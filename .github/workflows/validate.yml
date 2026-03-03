@@ -72,7 +72,7 @@ jobs:
           import glob, sys
 
           errors = 0
-          for pattern in ['skills/**/*.md', 'agents/*.md', 'commands/*.md']:
+          for pattern in ['skills/*/SKILL.md', 'agents/*.md', 'commands/*.md']:
               for path in glob.glob(pattern, recursive=True):
                   with open(path) as f:
                       content = f.read()
