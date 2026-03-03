@@ -43,7 +43,11 @@ If `/contribute` is invoked with no arguments, detect the appropriate phase from
 
 1. Check if `.claude/contribute-conventions.md` exists. Read it for current status.
 
-2. **If inside a git repo that is a fork:**
+2. **Resume from discover shortlist:**
+   If `.claude/contribute-discover.md` exists but `.claude/contribute-conventions.md` does not, the user completed discover but never analyzed.
+   Suggest: "You have a discover shortlist from a previous session. Want to **analyze** one of those issues?"
+
+3. **If inside a git repo that is a fork:**
    ```bash
    gh repo view --json isFork --jq '.isFork' 2>/dev/null
    ```
@@ -51,26 +55,30 @@ If `/contribute` is invoked with no arguments, detect the appropriate phase from
    a. **Uncommitted changes exist** (`git status --porcelain` is non-empty):
       Suggest: "You have uncommitted changes. Want to continue with **work**, or run **test** on what you have?"
 
-   b. **Feature branch with committed changes, no test report:**
+   b. **Conventions brief exists but no commits on feature branch** (analyze completed, work not started):
+      Check if `.claude/contribute-conventions.md` exists with `status: analyzing` and `git log main..HEAD --oneline` is empty.
+      Suggest: "Analysis is ready but no code changes yet. Ready to start **work**?"
+
+   c. **Feature branch with committed changes, no test report:**
       Suggest: "You have commits ready. Want to run **test** to validate before submitting?"
 
-   c. **Feature branch with committed changes AND passing test report:**
+   d. **Feature branch with committed changes AND passing test report:**
       Check if `.claude/contribute-test-report.md` exists and score >= 85%.
       Suggest: "Tests pass. Ready to **submit**?"
 
-   d. **Feature branch, no changes yet:**
+   e. **Feature branch, no changes yet (no brief):**
       Suggest: "Branch is clean. Ready to start **work**?"
 
-   e. **Default branch, no contribution state:**
+   f. **Default branch, no contribution state:**
       Suggest: "No active contribution. Want to **discover** an issue or **analyze** a specific one?"
 
-3. **If `.claude/contribute-conventions.md` exists with `status: submitted`:**
+4. **If `.claude/contribute-conventions.md` exists with `status: submitted`:**
    Suggest: "PR is open. Want to check **review** status?"
 
-4. **If not in a git repo or no fork detected:**
+5. **If not in a git repo or no fork detected:**
    Suggest: "Want to **discover** an issue to contribute to?"
 
-5. **If none of the above match:**
+6. **If none of the above match:**
    Present all available phases and ask the user to choose.
 
 Always explain why a phase is suggested and let the user override.

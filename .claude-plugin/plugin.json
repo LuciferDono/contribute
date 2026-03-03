@@ -7,6 +7,9 @@
   },
   "repository": "https://github.com/LuciferDono/contribute",
   "license": "MIT",
+  "engines": {
+    "claude-code": ">=1.0.0"
+  },
   "keywords": [
     "open-source",
     "contribution",

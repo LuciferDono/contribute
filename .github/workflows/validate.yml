@@ -1,0 +1,94 @@
+name: Validate Plugin
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate plugin.json exists and is valid JSON
+        run: |
+          if [ ! -f .claude-plugin/plugin.json ]; then
+            echo "ERROR: .claude-plugin/plugin.json not found"
+            exit 1
+          fi
+          python3 -c "import json; json.load(open('.claude-plugin/plugin.json'))"
+          echo "plugin.json is valid JSON"
+
+      - name: Validate plugin.json required fields
+        run: |
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/plugin.json') as f:
+              data = json.load(f)
+          required = ['name', 'version', 'description']
+          missing = [k for k in required if k not in data]
+          if missing:
+              print(f'ERROR: Missing required fields: {missing}')
+              sys.exit(1)
+          print('All required fields present')
+          "
+
+      - name: Validate YAML frontmatter in commands and agents
+        run: |
+          error=0
+          for dir in commands agents; do
+            if [ -d "$dir" ]; then
+              for f in "$dir"/*.md; do
+                [ -f "$f" ] || continue
+                if ! head -1 "$f" | grep -q '^---$'; then
+                  echo "ERROR: $f missing YAML frontmatter"
+                  error=1
+                fi
+              done
+            fi
+          done
+          exit $error
+
+      - name: Validate SKILL.md exists for each skill
+        run: |
+          error=0
+          if [ -d "skills" ]; then
+            for skill_dir in skills/*/; do
+              [ -d "$skill_dir" ] || continue
+              if [ ! -f "${skill_dir}SKILL.md" ]; then
+                echo "ERROR: ${skill_dir} missing SKILL.md"
+                error=1
+              fi
+            done
+          fi
+          exit $error
+
+      - name: Check for broken markdown links (internal)
+        run: |
+          error=0
+          for f in $(find . -name '*.md' -not -path './.git/*'); do
+            # Check relative file links like [text](path/to/file.md)
+            while IFS= read -r link; do
+              target=$(echo "$link" | sed 's/.*(\(.*\))/\1/' | sed 's/#.*//')
+              if [ -n "$target" ] && [ ! -f "$(dirname "$f")/$target" ] && [ ! -d "$(dirname "$f")/$target" ]; then
+                echo "WARNING: $f references $target which does not exist"
+              fi
+            done < <(grep -oE '\[([^]]*)\]\(([^)]*)\)' "$f" | grep -v 'http' | grep -v '#')
+          done
+          echo "Link check complete"
+
+      - name: Validate agent model fields
+        run: |
+          error=0
+          if [ -d "agents" ]; then
+            for f in agents/*.md; do
+              [ -f "$f" ] || continue
+              if ! grep -q '^model:' "$f"; then
+                echo "ERROR: $f missing model field"
+                error=1
+              fi
+            done
+          fi
+          exit $error

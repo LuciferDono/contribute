@@ -41,15 +41,24 @@ Use the GitHub CLI and GitHub MCP plugin to search. Execute multiple searches in
    gh search prs --repo <OWNER/REPO> --state=open "<ISSUE_NUMBER>"
    ```
 
-3. **Quality signals to prioritize:**
-   - Repo has a CONTRIBUTING.md
-   - Repo has CI configured (GitHub Actions, CircleCI, etc.)
-   - Issue has clear reproduction steps or acceptance criteria
-   - Maintainer has responded to the issue (indicates they care about it)
-   - Repo has had a release in the last 6 months:
+3. **Quality scoring (1 point each, max 5):**
+
+   Score each candidate against these signals to produce a numeric quality score that matches the issue-scout agent's output format:
+
+   | # | Signal | Check |
+   |---|--------|-------|
+   | 1 | CONTRIBUTING.md exists | Repo has contribution guidelines |
+   | 2 | CI configured | `.github/workflows/` directory exists or CI status checks present |
+   | 3 | Clear acceptance criteria | Issue body contains steps, expected behavior, or checkboxes |
+   | 4 | Maintainer engagement | A maintainer has commented on the issue |
+   | 5 | Recent release | Repo has had a release in the last 6 months |
+
    ```bash
+   # Check for recent release
    gh release list --repo <OWNER/REPO> --limit=1
    ```
+
+   Rank candidates by quality score (descending). Break ties by recency of activity.
 
 ## Step 3: Present and Persist the Shortlist
 

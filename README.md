@@ -131,31 +131,42 @@ The test phase is the quality gatekeeper. Your contribution must pass **5 stages
   CONTRIBUTION TEST REPORT
 ============================================
 
-Stage 1 -- Upstream Tests
-  [PASS]  142/142 tests passed (0 regressions)
+Stage 1 — Upstream Tests
+  [PASS]  142/142 passed (0 regressions)
   [PASS]  3 new tests added
   [PASS]  Coverage: 87%
 
-Stage 2 -- Code Quality
-  [PASS]  Linter: clean
-  [PASS]  Type checker: clean
-  [PASS]  Formatter: clean
+Stage 2 — Code Quality
+  [PASS]  Linter
+  [PASS]  Type checker
+  [PASS]  Formatter
+  [PASS]  Complexity
+  [PASS]  Dead code
+  [SKIP]  CodeRabbit (not configured)
 
-Stage 3 -- Security
-  [PASS]  Dependency audit: clean
-  [PASS]  Secret detection: clean
-  [PASS]  Input validation: verified
+Stage 3 — Security
+  [PASS]  Dependency audit
+  [PASS]  Secret detection
+  [PASS]  Input validation
+  [PASS]  Injection scan
 
-Stage 4 -- Functional
-  [PASS]  Clean build: success
-  [PASS]  Edge cases: verified
+Stage 4 — Functional
+  [PASS]  Clean build
+  [PASS]  Edge cases
+  [PASS]  Error handling
+  [PASS]  Integration
 
-Stage 5 -- AI Deep Review
+Stage 5 — AI Deep Review
   [PASS]  Correctness
+  [PASS]  Efficiency
   [WARN]  Readability (1 suggestion)
+  [PASS]  Maintainability
+  [PASS]  Completeness
   [PASS]  Pushback risk
 
-  Score: 96%  |  Status: PASS
+--------------------------------------------
+  Passed: 21 | Warnings: 1 | Skipped: 1
+  Score: 98%  |  Status: PASS
 ============================================
 ```
 
