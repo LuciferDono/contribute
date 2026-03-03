@@ -1,6 +1,6 @@
 <div align="center">
 
-# contribute
+# /contribute
 
 ### Ship open-source contributions 10x faster.
 
@@ -12,7 +12,7 @@
 **Full-lifecycle open-source contribution workflow.**
 Find issues. Analyze repos. Write code. Validate with industrial-grade testing. Submit PRs. Respond to reviews.
 
-All from a single command.
+One command. Every phase.
 
 [Installation](#installation) | [Quick Start](#quick-start) | [All Phases](#phases) | [Cross-Tool Support](#cross-tool-compatibility)
 
