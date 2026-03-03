@@ -1,0 +1,19 @@
+{
+  "name": "contribute",
+  "version": "1.0.0",
+  "description": "Full-lifecycle open-source contribution workflow: discover issues, analyze repos, write code, test, submit PRs, and respond to review feedback.",
+  "author": {
+    "name": "LuciferDono"
+  },
+  "repository": "https://github.com/LuciferDono/contribute",
+  "license": "MIT",
+  "keywords": [
+    "open-source",
+    "contribution",
+    "github",
+    "pull-request",
+    "code-review",
+    "testing",
+    "workflow"
+  ]
+}
