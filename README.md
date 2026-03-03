@@ -1,8 +1,8 @@
 <div align="center">
 
-# /contribute
+<img src="banner.png" alt="/contribute — Ship open-source contributions 10x faster" width="100%" />
 
-### Ship open-source contributions 10x faster.
+<br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/LuciferDono/contribute?style=social)](https://github.com/LuciferDono/contribute/stargazers)
