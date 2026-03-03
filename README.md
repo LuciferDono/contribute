@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="banner.png" alt="/contribute — Ship open-source contributions 10x faster" width="100%" />
+<img src="banner.png" alt="/contribute — Ship open-source contributions 10x faster" width="75%" />
 
 <br/>
 
