@@ -30,7 +30,7 @@ Contributing to open source is high-friction:
 - Submitting a quality PR means running tests, linters, security checks manually
 - Responding to review feedback is another context switch
 
-**This plugin turns the entire process into a guided, 11-phase workflow.** One command per phase. Built-in safety rails. Industrial-grade testing with an 85% quality gate before you can submit.
+**This plugin turns the entire process into a guided, 12-phase workflow.** One command per phase. Built-in safety rails. Industrial-grade testing with an 85% quality gate before you can submit.
 
 ---
 
@@ -77,12 +77,13 @@ Or just type `/contribute` -- it auto-detects the right phase from your current 
 
 ```
 /contribute discover ──> analyze ──> work ──> test ──> submit ──> review
-                                                │
-                                           sync (anytime)
-                                           cleanup (anytime)
-                                           triage (standalone)
-                                           pr-review (standalone)
-                                           release (standalone)
+                                                                    │
+                                                              debug ──> test ──> push
+                                                              sync (anytime)
+                                                              cleanup (anytime)
+                                                              triage (standalone)
+                                                              pr-review (standalone)
+                                                              release (standalone)
 ```
 
 ### Three Operating Modes
@@ -109,6 +110,7 @@ Choose how much the AI does:
 | 4 | **Test** | `/contribute test` | 5-stage industrial validation: upstream tests, static analysis, security audit, functional verification, AI deep review. **Must score 85%+ to unlock submit.** |
 | 5 | **Submit** | `/contribute submit` | Rebase on upstream, push to fork, draft PR following project conventions, open after your approval. |
 | 6 | **Review** | `/contribute review` | Check CI status, summarize maintainer feedback, iterate on requested changes, draft responses. |
+| 7 | **Debug** | `/contribute debug` | Diagnose CI failures or reviewer-reported bugs. Parse logs, map to changed code, apply targeted fix, re-test. |
 
 ### Standalone Phases
 
@@ -177,7 +179,8 @@ contribute/
 ├── skills/
 │   └── contribute/
 │       ├── SKILL.md             # Core rules + phase routing
-│       └── references/          # 11 phase reference files
+│       └── references/          # 12 phase reference files
+│           ├── phase-debug.md
 │           ├── phase-discover.md
 │           ├── phase-analyze.md
 │           ├── phase-work.md
