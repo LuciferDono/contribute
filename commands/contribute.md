@@ -10,7 +10,7 @@ Open-source contribution workflow. Route to the appropriate phase based on the a
 
 Parse `$ARGUMENTS` to determine the phase and any additional arguments (URLs, flags).
 
-**Phase keywords:** `discover`, `analyze`, `work`, `test`, `submit`, `review`, `pr-review`, `triage`, `sync`, `release`, `cleanup`
+**Phase keywords:** `discover`, `analyze`, `work`, `test`, `submit`, `review`, `debug`, `pr-review`, `triage`, `sync`, `release`, `cleanup`
 
 **With URL argument:** If a URL is provided after the phase keyword, pass it to that phase.
 - `/contribute analyze https://github.com/owner/repo/issues/123` -> analyze phase with URL
@@ -31,6 +31,7 @@ If a phase keyword is present, load the contribute skill and the corresponding r
 | `test` | `references/phase-test.md` | Launch deep-reviewer agent for Stage 5 |
 | `submit` | `references/phase-submit.md` | Requires test score >= 85% |
 | `review` | `references/phase-review.md` | Requires existing PR |
+| `debug` | `references/phase-debug.md` | Requires existing PR with CI failure or review feedback |
 | `pr-review` | `references/phase-pr-review.md` | Requires PR URL argument |
 | `release` | `references/phase-release.md` | Requires push access |
 | `triage` | `references/phase-triage.md` | Requires issue URL argument |
@@ -65,6 +66,15 @@ If `/contribute` is invoked with no arguments, detect the appropriate phase from
       Suggest: "No active contribution. Want to **discover** an issue or **analyze** a specific one?"
 
 3. **If `.claude/contribute-conventions.md` exists with `status: submitted`:**
+   Check CI status on the PR branch:
+   ```bash
+   gh run list --repo <OWNER/REPO> --branch <BRANCH> \
+     --limit 1 --json conclusion --jq '.[0].conclusion'
+   ```
+   If conclusion is `failure`:
+   Suggest: "CI is failing on your PR. Want to run **debug** to diagnose and fix?"
+
+   If CI is passing:
    Suggest: "PR is open. Want to check **review** status?"
 
 4. **If not in a git repo or no fork detected:**
