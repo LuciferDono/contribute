@@ -29,7 +29,7 @@ jobs:
       - name: Check all phase files exist
         run: |
           phases=(
-            discover analyze work test submit review
+            discover analyze work test submit review debug
             pr-review release triage sync cleanup
           )
           missing=0
