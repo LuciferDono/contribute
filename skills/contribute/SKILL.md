@@ -1,6 +1,6 @@
 ---
 name: contribute
-description: This skill should be used when the user asks to "contribute to open source", "find an issue to work on", "analyze a repo", "submit a pull request", "review PR feedback", "triage an issue", "sync my fork", "create a release", "clean up contribution branches", or mentions open-source contribution workflows. Provides a full-lifecycle open-source contribution system with 11 phases.
+description: This skill should be used when the user asks to "contribute to open source", "find an issue to work on", "analyze a repo", "submit a pull request", "review PR feedback", "triage an issue", "sync my fork", "create a release", "clean up contribution branches", "debug CI failures", or mentions open-source contribution workflows. Provides a full-lifecycle open-source contribution system with 12 phases.
 version: 1.0.0
 ---
 
@@ -67,6 +67,7 @@ Each phase is documented in a dedicated reference file. Load the relevant file w
 | Test | `/contribute test` | `references/phase-test.md` | Industrial-grade validation (85% gate) |
 | Submit | `/contribute submit` | `references/phase-submit.md` | Push and open PR |
 | Review | `/contribute review` | `references/phase-review.md` | Monitor PR, respond to feedback |
+| Debug | `/contribute debug` | `references/phase-debug.md` | Diagnose and fix CI failures or reviewer-reported bugs |
 | PR Review | `/contribute pr-review URL` | `references/phase-pr-review.md` | Review someone else's PR |
 | Release | `/contribute release` | `references/phase-release.md` | Create GitHub releases |
 | Triage | `/contribute triage URL` | `references/phase-triage.md` | Triage upstream issues |
@@ -77,12 +78,13 @@ Each phase is documented in a dedicated reference file. Load the relevant file w
 
 ```
 discover -> analyze -> work -> test -> submit -> review
-                                         |
-                                    sync (anytime)
-                                    cleanup (anytime)
-                                    triage (standalone)
-                                    pr-review (standalone)
-                                    release (standalone)
+                                                   |
+                                              debug -> test -> submit (force-push)
+                                              sync (anytime)
+                                              cleanup (anytime)
+                                              triage (standalone)
+                                              pr-review (standalone)
+                                              release (standalone)
 ```
 
 - **test** writes `.claude/contribute-test-report.md` -- submit reads it and refuses if score < 85% or any BLOCKER exists
@@ -96,7 +98,7 @@ All state is persisted in `.claude/` in the working directory:
 
 | File | Written By | Read By | Contents |
 |---|---|---|---|
-| `contribute-conventions.md` | analyze | work, test, submit, review, pr-review, sync, cleanup | Repo, issue, branch, mode, conventions, approach |
+| `contribute-conventions.md` | analyze | work, test, submit, review, debug, pr-review, sync, cleanup | Repo, issue, branch, mode, conventions, approach |
 | `contribute-test-report.md` | test | submit | Scored test report with pass/fail per check |
 | `contribute-discover.md` | discover | analyze (optional) | Search criteria and issue shortlist |
 | `contribute-release-notes.md` | release | release | Draft release notes for `--notes-file` |
