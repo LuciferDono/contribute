@@ -306,9 +306,13 @@ jobs:
                               warnings += 1
                               break  # one per file is enough
 
-                  # Check: no merge conflict markers
+                  # Check: no merge conflict markers (skip inside code blocks)
+                  in_code_block = False
                   for i, line in enumerate(lines, 1):
-                      if re.match(r'^(<{7}|={7}|>{7})', line):
+                      if line.strip().startswith('\x60\x60\x60'):
+                          in_code_block = not in_code_block
+                          continue
+                      if not in_code_block and re.match(r'^(<{7}|={7}|>{7})\s', line):
                           print(f'ERROR: {fname}:{i} merge conflict marker')
                           errors += 1
 
