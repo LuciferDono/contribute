@@ -26,6 +26,48 @@ jobs:
           print(f'Valid: {data[\"name\"]} v{data[\"version\"]}')
           "
 
+      - name: Validate marketplace.json
+        run: |
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/marketplace.json') as f:
+              data = json.load(f)
+          if 'plugins' not in data or len(data['plugins']) == 0:
+              print('marketplace.json missing plugins array')
+              sys.exit(1)
+          plugin = data['plugins'][0]
+          required = ['name', 'version', 'description']
+          missing = [k for k in required if k not in plugin]
+          if missing:
+              print(f'Missing required fields in plugin entry: {missing}')
+              sys.exit(1)
+          print(f'Valid: {plugin[\"name\"]} v{plugin[\"version\"]}')
+          "
+
+      - name: Check version consistency
+        run: |
+          python3 -c "
+          import json, re, sys
+
+          with open('.claude-plugin/plugin.json') as f:
+              v1 = json.load(f)['version']
+          with open('.claude-plugin/marketplace.json') as f:
+              v2 = json.load(f)['plugins'][0]['version']
+          with open('skills/contribute/SKILL.md') as f:
+              content = f.read()
+          m = re.search(r'version:\s*(\S+)', content)
+          v3 = m.group(1) if m else 'NOT FOUND'
+
+          print(f'plugin.json:      {v1}')
+          print(f'marketplace.json: {v2}')
+          print(f'SKILL.md:         {v3}')
+
+          if not (v1 == v2 == v3):
+              print('VERSION MISMATCH — all three files must have the same version')
+              sys.exit(1)
+          print('All versions match')
+          "
+
       - name: Check all phase files exist
         run: |
           phases=(
@@ -51,12 +93,15 @@ jobs:
         run: |
           files=(
             "skills/contribute/SKILL.md"
+            "skills/contribute/references/security-checks.md"
             "agents/deep-reviewer.md"
             "agents/issue-scout.md"
             "commands/contribute.md"
             ".claude-plugin/plugin.json"
+            ".claude-plugin/marketplace.json"
             "README.md"
             "LICENSE"
+            "PRIVACY.md"
           )
           for file in "${files[@]}"; do
             if [ ! -f "$file" ]; then
@@ -93,27 +138,184 @@ jobs:
               sys.exit(1)
           "
 
-      - name: Check internal markdown references resolve
+      - name: Validate cross-references between phase files
         run: |
           python3 -c "
           import re, os, sys
 
           errors = 0
-          skill_path = 'skills/contribute/SKILL.md'
-          with open(skill_path) as f:
-              content = f.read()
+          ref_dir = 'skills/contribute/references'
 
-          links = re.findall(r'\[.*?\]\(((?!http)[^)]+)\)', content)
-          for link in links:
-              resolved = os.path.normpath(os.path.join('skills/contribute', link))
-              if not os.path.exists(resolved):
-                  print(f'BROKEN LINK in SKILL.md: {link} -> {resolved}')
+          # Check all references from phase files to other files
+          for fname in os.listdir(ref_dir):
+              if not fname.endswith('.md'):
+                  continue
+              fpath = os.path.join(ref_dir, fname)
+              with open(fpath) as f:
+                  content = f.read()
+
+              # Find references to other files in references/
+              refs = re.findall(r'(?:references/|Refer to \x60)([a-z0-9-]+\.md)', content)
+              for ref in refs:
+                  target = os.path.join(ref_dir, ref)
+                  if not os.path.exists(target):
+                      print(f'BROKEN REF in {fname}: {ref} -> {target}')
+                      errors += 1
+                  else:
+                      print(f'OK: {fname} -> {ref}')
+
+          # Check SKILL.md routing table references
+          with open('skills/contribute/SKILL.md') as f:
+              skill_content = f.read()
+
+          refs = re.findall(r'references/(phase-[a-z-]+\.md)', skill_content)
+          for ref in refs:
+              target = os.path.join(ref_dir, ref)
+              if not os.path.exists(target):
+                  print(f'BROKEN REF in SKILL.md: {ref}')
                   errors += 1
               else:
-                  print(f'OK: {link}')
+                  print(f'OK: SKILL.md -> {ref}')
 
           if errors:
-              print(f'{errors} broken link(s)')
+              print(f'{errors} broken reference(s)')
+              sys.exit(1)
+          print('All cross-references valid')
+          "
+
+      - name: Check SKILL.md phase table completeness
+        run: |
+          python3 -c "
+          import re, sys
+
+          with open('skills/contribute/SKILL.md') as f:
+              content = f.read()
+
+          # Extract phases from routing table
+          table_phases = re.findall(r'\| (\w[\w -]*?) \|.*?references/(phase-[a-z-]+\.md)', content)
+          print(f'Found {len(table_phases)} phases in routing table')
+
+          # Every phase in the dependency diagram should be in the table
+          dep_phases = re.findall(r'(discover|analyze|work|test|submit|review|debug|sync|cleanup|triage|pr-review|release)', content)
+          dep_phases = set(dep_phases)
+
+          table_files = {f for _, f in table_phases}
+          for phase in dep_phases:
+              expected = f'phase-{phase}.md'
+              if expected not in table_files:
+                  print(f'Phase \"{phase}\" in dependency diagram but missing from routing table')
+                  sys.exit(1)
+              print(f'OK: {phase} -> {expected}')
+
+          print('All phases accounted for')
+          "
+
+      - name: Check state files documented
+        run: |
+          python3 -c "
+          import re, sys
+
+          with open('skills/contribute/SKILL.md') as f:
+              content = f.read()
+
+          # State files that must be in the table
+          expected = [
+              'contribute-conventions.md',
+              'contribute-test-report.md',
+              'contribute-local-execution.log',
+              'contribute-discover.md',
+              'contribute-release-notes.md',
+              'contribute-pr-body.md',
+          ]
+
+          missing = []
+          for sf in expected:
+              if sf not in content:
+                  missing.append(sf)
+              else:
+                  print(f'OK: {sf} documented')
+
+          if missing:
+              print(f'State files missing from SKILL.md: {missing}')
+              sys.exit(1)
+          print('All state files documented')
+          "
+
+      - name: License integrity check
+        run: |
+          python3 -c "
+          import sys
+
+          with open('LICENSE') as f:
+              content = f.read()
+
+          checks = [
+              ('Business Source License 1.1', 'BSL 1.1 header'),
+              ('Pranav R. Jadhav', 'Licensor name'),
+              ('GNU Affero General Public License', 'Change License'),
+              ('March 8, 2030', 'Change Date'),
+          ]
+
+          errors = 0
+          for needle, label in checks:
+              if needle in content:
+                  print(f'OK: {label}')
+              else:
+                  print(f'MISSING: {label} (\"{needle}\")')
+                  errors += 1
+
+          if errors:
+              print(f'{errors} license check(s) failed')
+              sys.exit(1)
+          print('License intact')
+          "
+
+      - name: Markdown lint (headings and structure)
+        run: |
+          python3 -c "
+          import os, re, sys
+
+          errors = 0
+          warnings = 0
+
+          for root, dirs, files in os.walk('skills/contribute/references'):
+              for fname in sorted(files):
+                  if not fname.endswith('.md'):
+                      continue
+                  fpath = os.path.join(root, fname)
+                  with open(fpath) as f:
+                      lines = f.readlines()
+
+                  # Check: file starts with a heading
+                  first_content = ''
+                  for line in lines:
+                      if line.strip():
+                          first_content = line.strip()
+                          break
+                  if not first_content.startswith('#'):
+                      print(f'WARN: {fname} does not start with a heading')
+                      warnings += 1
+
+                  # Check: no trailing whitespace
+                  for i, line in enumerate(lines, 1):
+                      if line.rstrip('\n\r') != line.rstrip():
+                          # Only flag if significant (not blank lines)
+                          stripped = line.rstrip('\n\r')
+                          if stripped and stripped != stripped.rstrip():
+                              print(f'WARN: {fname}:{i} trailing whitespace')
+                              warnings += 1
+                              break  # one per file is enough
+
+                  # Check: no merge conflict markers
+                  for i, line in enumerate(lines, 1):
+                      if re.match(r'^(<{7}|={7}|>{7})', line):
+                          print(f'ERROR: {fname}:{i} merge conflict marker')
+                          errors += 1
+
+                  print(f'OK: {fname} ({len(lines)} lines)')
+
+          print(f'Errors: {errors}, Warnings: {warnings}')
+          if errors:
               sys.exit(1)
           "
 
@@ -127,3 +329,23 @@ jobs:
 
           total=$(find skills/contribute/references -name '*.md' -exec cat {} + | wc -l)
           echo "Total reference lines: $total"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "=============================="
+          echo "  VALIDATION COMPLETE"
+          echo "=============================="
+          echo ""
+          echo "Files checked:"
+          echo "  - plugin.json + marketplace.json (JSON valid, fields present)"
+          echo "  - Version consistency across 3 files"
+          echo "  - 12 phase reference files exist"
+          echo "  - Cross-references between phases resolve"
+          echo "  - SKILL.md routing table complete"
+          echo "  - State files documented"
+          echo "  - License intact (BSL 1.1)"
+          echo "  - Markdown structure (headings, conflicts, whitespace)"
+          echo "  - YAML frontmatter in skill/agent/command files"
+          echo ""
+          echo "contribute v$(python3 -c "import json; print(json.load(open('.claude-plugin/plugin.json'))['version'])")"
