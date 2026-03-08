@@ -97,14 +97,69 @@ required labels, and whether draft PRs are expected.
 **Title:** Follow the project's format. Mirror conventional commit style
 if the project uses it. Keep under 70 characters.
 
-**Body:** Use the repo's PR template if one exists. If not:
+**Body:** Use the repo's PR template if one exists. If not, write a
+body that reads like a real contributor wrote it:
+
 - **Summary:** 2-3 sentences on what this PR does and why
 - **Fixes:** `Fixes #NUMBER`
 - **Changes:** One bullet per logical change
-- **Testing:** Pull the testing summary directly from
-  `.claude/contribute-test-report.md` — do not reconstruct from memory
+- **Testing:** Brief note on how you tested. Pull key facts from
+  `.claude/contribute-test-report.md` but do not dump the full report.
 - **Notes for Reviewers:** Anything needing special attention, open
   questions, or decisions that could have gone another way
+
+### PR Body Humanization
+
+**Check contributor history first:**
+```bash
+gh pr list --repo <OWNER/REPO> --author @me --state all --limit 5
+```
+If `gh auth status` is not authenticated or the command returns an error,
+skip this check and use the standard (established contributor) body
+format. Do not apply first-PR rules unless the history confirms it.
+
+If this is the user's **first PR to this repo**, tone down the body:
+- Shorter is better. 5-10 lines max, not 30.
+- Don't use markdown headers (##) unless the PR template requires them.
+- Don't add checkboxes unless the template has them.
+- Don't include a test matrix or coverage report.
+- Write like you're explaining to a coworker, not writing documentation.
+
+**Good first-time PR body:**
+```
+Fixes #1234
+
+The benchmark was failing because the helm chart sets labels
+differently from what main.go expects. Updated values-benchmark.yaml
+to include the right labels.
+
+Tested locally — full benchmark suite passes now.
+```
+
+**Bad first-time PR body (too polished):**
+```
+## Summary
+This PR resolves the label mismatch between the Helm chart deployment
+and the benchmark runner expectations.
+
+## Changes
+- Updated `values-benchmark.yaml` to include correct label selectors
+- Modified `configure-vpa.sh` to use Helm values instead of kubectl
+- Updated `full-benchmark.sh` prerequisites
+
+## Testing
+- All 47 benchmark tests passing
+- Zero regressions from baseline
+- Full test suite: 142/142 passed
+```
+
+**For established contributors** (5+ merged PRs in the repo), a more
+detailed body is acceptable and expected.
+
+**Words to avoid in PR descriptions:** "enhance", "enhancement",
+"streamline", "leverage", "utilize", "comprehensive", "robust",
+"seamless", "implement" (as a fancy synonym for "add").
+Use plain language: "fix", "add", "change", "update", "remove".
 
 **Labels:** If the contribution guide specifies required labels for this
 PR type, include them via `--label`. Do not guess labels not mentioned

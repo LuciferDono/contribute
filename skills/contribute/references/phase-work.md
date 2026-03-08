@@ -147,5 +147,38 @@ Only after explicit approval:
    If the branch was already pushed, follow with the force-push flow
    (`--force-with-lease`, with explicit permission).
 
+### Commit Message Humanization
+
+AI-generated commit messages are a top signal maintainers look for.
+Follow these rules to write messages that read like a real developer:
+
+**Style rules:**
+- Lowercase first word unless it's a proper noun or conventional prefix
+- Short subject line (50 chars max), no period at the end
+- Match the project's existing commit style exactly — check `git log --oneline -20`
+- If the project uses conventional commits (`feat:`, `fix:`, `chore:`),
+  use them. If not, don't.
+
+**What to avoid:**
+- Overly descriptive subjects: `fix: resolve edge case in label selector matching for VPA benchmark recommender component` — too AI
+- Perfect grammar in every message — real devs write `fix label mismatch in benchmark` not `Fix: Correct label selector mismatch in VPA benchmark`
+- Bullet-point bodies — real devs rarely write multi-bullet commit bodies for small changes
+- Words that signal AI: "enhance", "enhancement", "streamline", "leverage", "utilize", "comprehensive", "robust", "seamless", "implement" (as a fancy synonym for "add")
+
+**Good examples:**
+- `fix helm label mismatch in benchmark`
+- `add retry logic for flaky API calls`
+- `update deps, fix breaking change in v3`
+- `wip: rough draft of config parser` (if project allows WIP commits)
+
+**Bad examples (too AI):**
+- `Fix: Update Helm chart label selectors to match benchmark expectations`
+- `Enhancement: Implement comprehensive retry mechanism for API calls`
+- `Refactor: Streamline configuration parsing for improved maintainability`
+
+**Multi-commit contributions:** If your change spans multiple commits,
+the first commit message matters most — it often becomes the PR title.
+Keep it punchy and specific.
+
 Ask permission before committing:
 > "Ready to commit with message: `message here`. Proceed?"

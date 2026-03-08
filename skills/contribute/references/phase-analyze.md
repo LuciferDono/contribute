@@ -15,9 +15,9 @@ Fetch and read all of the following in parallel:
 - .github/PULL_REQUEST_TEMPLATE.md (or .github/PULL_REQUEST_TEMPLATE/ directory)
 - .github/ISSUE_TEMPLATE/ directory
 - .editorconfig
-- Linter configs: .pylintrc, .flake8, setup.cfg, .clang-format, .clang-tidy, .eslintrc, prettier config
-- Formatter configs: pyproject.toml (tool.black section), rustfmt.toml, etc.
-- Build system files: Makefile, CMakeLists.txt, setup.py, setup.cfg, pyproject.toml, package.json
+- Linter configs: .pylintrc, .flake8, setup.cfg, ruff.toml, .clang-format, .clang-tidy, .eslintrc, eslint.config.js, prettier config, .golangci-lint.yml, clippy.toml, .rubocop.yml, phpstan.neon, .swiftlint.yml, detekt.yml, .editorconfig (ktlint reads from this), .credo.exs, .hlint.yaml, analysis_options.yaml, shellcheck directives, .hadolint.yaml, .solhint.json, buf.yaml
+- Formatter configs: pyproject.toml (tool.black/ruff section), rustfmt.toml, .prettierrc, biome.json, gofmt/goimports, .editorconfig, scalafmt.conf, .ormolu, ocamlformat, fantomas config
+- Build system files: Makefile, CMakeLists.txt, meson.build, setup.py, setup.cfg, pyproject.toml, package.json, Cargo.toml, go.mod, build.gradle, build.gradle.kts, pom.xml, build.sbt, mix.exs, Gemfile, pubspec.yaml, *.sln, *.csproj, Package.swift, Dockerfile, docker-compose.yml, helm/Chart.yaml, Justfile, Taskfile.yml, BUILD (Bazel), WORKSPACE (Bazel), flake.nix, shell.nix, dune-project / dune (OCaml), *.nimble (Nim), v.mod (Vlang), Project.toml (Julia), *.rockspec (Lua)
 - .github/workflows/ — CI expectations
 
 **Branch naming convention:** If CONTRIBUTING.md does not document a branch naming convention, infer it from recent PRs:
@@ -42,10 +42,18 @@ Perform a structured exploration:
    > "I need to install project dependencies to verify the build. This
    > will run [exact command]. Proceed?"
    ```bash
-   # Example for Python
-   pip install -e ".[dev]" && python -m pytest --co -q
-   # Example for Node
-   npm ci && npm test -- --listTests
+   # Detect from build files and run the appropriate command:
+   # Python:     pip install -e ".[dev]" && python -m pytest --co -q
+   # Node:       npm ci && npm test -- --listTests
+   # Rust:       cargo build && cargo test -- --list
+   # Go:         go build ./... && go test ./... -list '.*'
+   # Java:       mvn compile -q && mvn test -pl . -Dtest=none
+   # Ruby:       bundle install && bundle exec rake -T test
+   # Elixir:     mix deps.get && mix compile
+   # C#:         dotnet restore && dotnet build
+   # Swift:      swift build
+   # Dart:       dart pub get && dart test --reporter=compact
+   # Helm:       helm dependency build && helm lint .
    ```
    If commands fail, diagnose the error (missing deps, wrong Python version, missing system libraries, etc.), attempt to fix, and retry. If unresolvable after two attempts, document the blocker in the brief under Risks as a blocker-level risk.
 4. **Test framework:** Identify the test runner, test directory structure, test naming conventions, and how to run a single test.

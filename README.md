@@ -4,7 +4,7 @@
 
 <br/>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: BSL 1.1](https://img.shields.io/badge/License-BSL_1.1-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/LuciferDono/contribute?style=social)](https://github.com/LuciferDono/contribute/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/LuciferDono/contribute)](https://github.com/LuciferDono/contribute/issues)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
@@ -59,7 +59,7 @@ claude plugin add LuciferDono/contribute
 # Write the code (choose your mode: do / guide / adaptive)
 /contribute work
 
-# Validate with 5-stage testing (must score 85%+)
+# Validate with 6-stage testing (must score 85%+)
 /contribute test
 
 # Push and open PR
@@ -107,7 +107,7 @@ Choose your level of assistance:
 | 1 | **Discover** | `/contribute discover` | Search GitHub for issues matching your skills. Quality scoring helps you pick the right one. Checks issues aren't already taken. |
 | 2 | **Analyze** | `/contribute analyze URL` | Clone repo, read CONTRIBUTING.md, trace code paths, and produce a structured brief with files to modify and recommended approach. |
 | 3 | **Work** | `/contribute work` | Implement the change. TDD-first. Match upstream style exactly. Minimal, focused changes only. |
-| 4 | **Test** | `/contribute test` | 5-stage validation: upstream tests, static analysis, security audit, functional verification, deep review. **Must score 85%+ to unlock submit.** |
+| 4 | **Test** | `/contribute test` | 6-stage validation: local execution, upstream tests, static analysis, security audit, functional verification, deep review. **Must score 85%+ to unlock submit.** |
 | 5 | **Submit** | `/contribute submit` | Rebase on upstream, push to fork, draft PR following project conventions, open after your approval. |
 | 6 | **Review** | `/contribute review` | Check CI status, summarize maintainer feedback, help you iterate on requested changes and draft responses. |
 | 7 | **Debug** | `/contribute debug` | Walk through CI failures or reviewer-reported bugs. Parse logs, map to changed code, help you apply a targeted fix and re-test. |
@@ -126,12 +126,16 @@ Choose your level of assistance:
 
 ## The Test Gate
 
-The test phase is the quality gatekeeper. Your contribution must pass **5 stages** and score **85% or higher** before you can submit:
+The test phase is the quality gatekeeper. Your contribution must pass **6 stages** (Stage 0–5) and score **85% or higher** before you can submit:
 
 ```
 ============================================
   CONTRIBUTION TEST REPORT
 ============================================
+
+Stage 0 -- Local Execution
+  [PASS]  Build succeeded
+  [PASS]  Test suite passed
 
 Stage 1 -- Upstream Tests
   [PASS]  142/142 tests passed (0 regressions)
@@ -179,7 +183,7 @@ contribute/
 ├── skills/
 │   └── contribute/
 │       ├── SKILL.md             # Core rules + phase routing
-│       └── references/          # 12 phase reference files
+│       └── references/          # Phase reference files + security checklist
 │           ├── phase-debug.md
 │           ├── phase-discover.md
 │           ├── phase-analyze.md
@@ -229,6 +233,7 @@ All contribution state persists in `.claude/` across sessions:
 |------|-----------|---------|----------|
 | `contribute-conventions.md` | analyze | work, test, submit, review, sync, cleanup | Repo, issue, branch, mode, full conventions |
 | `contribute-test-report.md` | test | submit | Scored test report (85% gate) |
+| `contribute-local-execution.log` | test | submit | Raw terminal output from local execution |
 | `contribute-discover.md` | discover | analyze | Issue shortlist with quality scores |
 | `contribute-release-notes.md` | release | release | Draft release notes |
 | `contribute-pr-body.md` | submit | submit | PR body content |
@@ -257,4 +262,4 @@ Contributions welcome. This plugin follows its own workflow -- use `/contribute 
 
 ## License
 
-[MIT](LICENSE)
+[BSL 1.1](LICENSE) — Converts to AGPL 3.0 on March 8, 2030
