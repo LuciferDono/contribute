@@ -4,7 +4,9 @@
 
 <br/>
 
+[![CI](https://github.com/LuciferDono/contribute/actions/workflows/validate.yml/badge.svg)](https://github.com/LuciferDono/contribute/actions/workflows/validate.yml)
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL_1.1-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/LuciferDono/contribute/releases/tag/v2.0.0)
 [![GitHub stars](https://img.shields.io/github/stars/LuciferDono/contribute?style=social)](https://github.com/LuciferDono/contribute/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/LuciferDono/contribute)](https://github.com/LuciferDono/contribute/issues)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
