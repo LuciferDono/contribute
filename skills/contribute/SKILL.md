@@ -1,7 +1,7 @@
 ---
 name: contribute
 description: This skill should be used when the user asks to "contribute to open source", "find an issue to work on", "analyze a repo", "submit a pull request", "review PR feedback", "triage an issue", "sync my fork", "create a release", "clean up contribution branches", "debug CI failures", or mentions open-source contribution. Provides a structured 12-phase guide for open-source contribution.
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Open-Source Contribution Skill
