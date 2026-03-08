@@ -5,7 +5,7 @@
     "email": "pranavj821@gmail.com"
   },
   "metadata": {
-    "description": "Full-lifecycle open-source contribution workflow plugin for Claude Code. 12 phases: discover, analyze, work, test, submit, review, debug, pr-review, triage, sync, release, cleanup.",
+    "description": "Structured 12-phase guide for open-source contribution in Claude Code: discover, analyze, work, test, submit, review, debug, pr-review, triage, sync, release, cleanup.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -15,7 +15,7 @@
         "source": "github",
         "repo": "LuciferDono/contribute"
       },
-      "description": "Full-lifecycle open-source contribution workflow: discover issues, analyze repos, write code, test with 85% quality gate, submit PRs, debug CI failures, and respond to review feedback. 12 phases, 3 operating modes, 6 safety rules.",
+      "description": "Structured guide for open-source contribution: discover issues, analyze repos, write code, test with 85% quality gate, submit PRs, debug CI failures, and respond to review feedback. 12 phases, 3 operating modes, 6 safety rules.",
       "version": "1.0.0",
       "author": {
         "name": "LuciferDono"

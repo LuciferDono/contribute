@@ -9,10 +9,10 @@
 [![GitHub issues](https://img.shields.io/github/issues/LuciferDono/contribute)](https://github.com/LuciferDono/contribute/issues)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
 
-**Full-lifecycle open-source contribution workflow.**
-Find issues. Analyze repos. Write code. Validate with industrial-grade testing. Submit PRs. Respond to reviews.
+**Your step-by-step guide to open-source contribution.**
+Find issues. Analyze repos. Write code. Validate with structured testing. Submit PRs. Respond to reviews.
 
-One command. Every phase.
+One command per phase. You stay in control.
 
 [Installation](#installation) | [Quick Start](#quick-start) | [All Phases](#phases) | [Cross-Tool Support](#cross-tool-compatibility)
 
@@ -30,7 +30,7 @@ Contributing to open source is high-friction:
 - Submitting a quality PR means running tests, linters, security checks manually
 - Responding to review feedback is another context switch
 
-**This plugin turns the entire process into a guided, 12-phase workflow.** One command per phase. Built-in safety rails. Industrial-grade testing with an 85% quality gate before you can submit.
+**This plugin breaks the entire process into a structured, 12-phase guide.** One command per phase. Built-in safety rails. Rigorous testing with an 85% quality gate before you can submit.
 
 ---
 
@@ -69,7 +69,7 @@ claude plugin add LuciferDono/contribute
 /contribute review
 ```
 
-Or just type `/contribute` -- it auto-detects the right phase from your current context.
+Or just type `/contribute` -- it suggests the right phase based on your current context.
 
 ---
 
@@ -88,11 +88,11 @@ Or just type `/contribute` -- it auto-detects the right phase from your current 
 
 ### Three Operating Modes
 
-Choose how much the AI does:
+Choose your level of assistance:
 
 | Mode | AI Does | You Do |
 |------|---------|--------|
-| **do** | Everything -- code, tests, formatting, validation | Review diffs, approve write operations |
+| **do** | Drafts code, tests, formatting, validation | You review every diff and approve all writes |
 | **guide** | Explain each step, provide snippets and commands | Execute the commands, write the code |
 | **adaptive** | Boilerplate, scaffolding, mechanical work | Logic, design decisions, algorithmic choices |
 
@@ -104,22 +104,22 @@ Choose how much the AI does:
 
 | # | Phase | Command | What It Does |
 |---|-------|---------|-------------|
-| 1 | **Discover** | `/contribute discover` | Search GitHub for issues matching your skills. Parallel searches with quality scoring. Verifies issues aren't already taken. |
-| 2 | **Analyze** | `/contribute analyze URL` | Clone repo, read CONTRIBUTING.md, trace code paths, produce a structured contribution brief with files to modify and recommended approach. |
+| 1 | **Discover** | `/contribute discover` | Search GitHub for issues matching your skills. Quality scoring helps you pick the right one. Checks issues aren't already taken. |
+| 2 | **Analyze** | `/contribute analyze URL` | Clone repo, read CONTRIBUTING.md, trace code paths, and produce a structured brief with files to modify and recommended approach. |
 | 3 | **Work** | `/contribute work` | Implement the change. TDD-first. Match upstream style exactly. Minimal, focused changes only. |
-| 4 | **Test** | `/contribute test` | 5-stage industrial validation: upstream tests, static analysis, security audit, functional verification, AI deep review. **Must score 85%+ to unlock submit.** |
+| 4 | **Test** | `/contribute test` | 5-stage validation: upstream tests, static analysis, security audit, functional verification, deep review. **Must score 85%+ to unlock submit.** |
 | 5 | **Submit** | `/contribute submit` | Rebase on upstream, push to fork, draft PR following project conventions, open after your approval. |
-| 6 | **Review** | `/contribute review` | Check CI status, summarize maintainer feedback, iterate on requested changes, draft responses. |
-| 7 | **Debug** | `/contribute debug` | Diagnose CI failures or reviewer-reported bugs. Parse logs, map to changed code, apply targeted fix, re-test. |
+| 6 | **Review** | `/contribute review` | Check CI status, summarize maintainer feedback, help you iterate on requested changes and draft responses. |
+| 7 | **Debug** | `/contribute debug` | Walk through CI failures or reviewer-reported bugs. Parse logs, map to changed code, help you apply a targeted fix and re-test. |
 
 ### Standalone Phases
 
 | Phase | Command | What It Does |
 |-------|---------|-------------|
 | **PR Review** | `/contribute pr-review URL` | Review someone else's PR: correctness, style, tests, security, performance. Structured severity ratings. |
-| **Release** | `/contribute release` | Create GitHub releases with proper tags, semver bumps, and generated changelogs. |
-| **Triage** | `/contribute triage URL` | Reproduce bugs, categorize issues, check duplicates, draft response comments. |
-| **Sync** | `/contribute sync` | Keep fork in sync with upstream via rebase or merge. Handle conflicts interactively. |
+| **Release** | `/contribute release` | Create GitHub releases with proper tags, semver bumps, and changelogs. |
+| **Triage** | `/contribute triage URL` | Reproduce bugs, categorize issues, check duplicates, help draft response comments. |
+| **Sync** | `/contribute sync` | Keep fork in sync with upstream via rebase or merge. Walk through conflicts interactively. |
 | **Cleanup** | `/contribute cleanup` | Remove state files, branches, close stale PRs. Supports `--dry-run` and `--full`. |
 
 ---
@@ -161,7 +161,7 @@ Stage 5 -- AI Deep Review
 ============================================
 ```
 
-**Any BLOCKER = automatic FAIL regardless of score.**
+**Any BLOCKER = instant FAIL regardless of score.**
 
 ---
 
@@ -173,9 +173,9 @@ contribute/
 │   └── plugin.json              # Plugin manifest
 ├── agents/
 │   ├── deep-reviewer.md         # AI deep review (test Stage 5)
-│   └── issue-scout.md           # Parallel issue discovery
+│   └── issue-scout.md           # Issue discovery helper
 ├── commands/
-│   └── contribute.md            # /contribute command + auto-detection
+│   └── contribute.md            # /contribute command + context detection
 ├── skills/
 │   └── contribute/
 │       ├── SKILL.md             # Core rules + phase routing
@@ -200,9 +200,9 @@ contribute/
 | Component | Purpose |
 |-----------|---------|
 | **Skill** | Core rules (read/write permissions, upstream conventions, operating modes) and phase routing table. Progressive disclosure -- phase details load on demand. |
-| **Command** | `/contribute` entry point. Owns argument parsing, phase routing, and auto-detection. |
-| **deep-reviewer** | Isolated Opus agent for test Stage 5. Gets diff + issue + brief. Returns structured severity ratings. |
-| **issue-scout** | Isolated Opus agent for discover phase. Runs parallel `gh search` queries, applies Rule 6, scores quality signals. |
+| **Command** | `/contribute` entry point. Owns argument parsing, phase routing, and context detection. |
+| **deep-reviewer** | Dedicated reviewer for test Stage 5. Gets diff + issue + brief. Returns structured severity ratings. |
+| **issue-scout** | Dedicated helper for discover phase. Runs `gh search` queries, applies Rule 6, scores quality signals. |
 
 ---
 
@@ -214,9 +214,9 @@ Six non-negotiable rules govern every action:
 |---|------|-----|
 | 1 | **Read is free, write requires permission** | Every fork, branch, commit, push, and comment requires your explicit approval. Nothing happens without your say-so. |
 | 2 | **No AI attribution** | Every commit appears as sole-authored by you. Zero AI trailers. Zero exceptions. |
-| 3 | **Three operating modes** | You choose how much autonomy the AI gets: do, guide, or adaptive. |
+| 3 | **Three operating modes** | You choose your level of assistance: do, guide, or adaptive. |
 | 4 | **Respect upstream conventions** | Matches the project's style exactly. Tabs, naming, commit format -- all mirrored from the target repo. |
-| 5 | **Opus only** | Both agents run on Claude Opus for maximum quality. No shortcuts. |
+| 5 | **Opus only** | Both reviewers run on Claude Opus for maximum quality. No shortcuts. |
 | 6 | **Verify issue is not taken** | Checks assignees, open PRs, comment claims, and linked PRs before recommending any issue. Never creates duplicate work. |
 
 ---
@@ -245,9 +245,9 @@ Built for **Claude Code**, but the skill content is pure markdown. Other AI codi
 | Core rules | Enforced by skill | Enforced by skill |
 | State files | `.claude/` directory | `.claude/` directory |
 | GitHub CLI commands | Works | Works |
-| deep-reviewer agent | Isolated subagent | Inline review |
-| issue-scout agent | Isolated subagent | Inline search |
-| Auto-detection | Built into command | Manual phase selection |
+| deep-reviewer | Dedicated reviewer | Inline review |
+| issue-scout | Dedicated helper | Inline search |
+| Context detection | Built into command | Manual phase selection |
 
 ---
 

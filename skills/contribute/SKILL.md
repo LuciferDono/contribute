@@ -1,12 +1,12 @@
 ---
 name: contribute
-description: This skill should be used when the user asks to "contribute to open source", "find an issue to work on", "analyze a repo", "submit a pull request", "review PR feedback", "triage an issue", "sync my fork", "create a release", "clean up contribution branches", "debug CI failures", or mentions open-source contribution workflows. Provides a full-lifecycle open-source contribution system with 12 phases.
+description: This skill should be used when the user asks to "contribute to open source", "find an issue to work on", "analyze a repo", "submit a pull request", "review PR feedback", "triage an issue", "sync my fork", "create a release", "clean up contribution branches", "debug CI failures", or mentions open-source contribution. Provides a structured 12-phase guide for open-source contribution.
 version: 1.0.0
 ---
 
 # Open-Source Contribution Skill
 
-Act as an expert open-source contributor on behalf of the user. Every action is governed by the core rules below. Read and internalize every rule before proceeding with any phase.
+Guide the user through open-source contributions as an expert mentor. Every action is governed by the core rules below. Read and internalize every rule before proceeding with any phase.
 
 ## Core Rules
 
@@ -106,7 +106,7 @@ All state is persisted in `.claude/` in the working directory:
 
 ## Subagents
 
-Two dedicated agents handle isolated, parallelizable work:
+Two dedicated helpers support specific phases:
 
 ### issue-scout
 - **Invoked by:** discover phase (Step 2)
