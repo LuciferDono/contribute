@@ -64,7 +64,7 @@ Each phase is documented in a dedicated reference file. Load the relevant file w
 | Discover | `/contribute discover` | `references/phase-discover.md` | Find matching open-source issues |
 | Analyze | `/contribute analyze URL` | `references/phase-analyze.md` | Deep-dive into repo and issue |
 | Work | `/contribute work` | `references/phase-work.md` | Implement the contribution |
-| Test | `/contribute test` | `references/phase-test.md` | Industrial-grade validation (85% gate) |
+| Test | `/contribute test` | `references/phase-test.md` | Rigorous validation (85% gate, mandatory local execution) |
 | Submit | `/contribute submit` | `references/phase-submit.md` | Push and open PR |
 | Review | `/contribute review` | `references/phase-review.md` | Monitor PR, respond to feedback |
 | Debug | `/contribute debug` | `references/phase-debug.md` | Diagnose and fix CI failures or reviewer-reported bugs |
@@ -87,7 +87,7 @@ discover -> analyze -> work -> test -> submit -> review
                                               release (standalone)
 ```
 
-- **test** writes `.claude/contribute-test-report.md` -- submit reads it and refuses if score < 85% or any BLOCKER exists
+- **test** writes `.claude/contribute-test-report.md` and `.claude/contribute-local-execution.log` -- submit reads the report and refuses if score < 85% or any BLOCKER exists
 - **analyze** writes `.claude/contribute-conventions.md` -- all subsequent phases read it
 - **work** requires `.claude/contribute-conventions.md` to exist
 - **submit** requires `.claude/contribute-test-report.md` with passing score
@@ -100,6 +100,7 @@ All state is persisted in `.claude/` in the working directory:
 |---|---|---|---|
 | `contribute-conventions.md` | analyze | work, test, submit, review, debug, pr-review, sync, cleanup | Repo, issue, branch, mode, conventions, approach |
 | `contribute-test-report.md` | test | submit | Scored test report with pass/fail per check |
+| `contribute-local-execution.log` | test | submit | Raw terminal output from Stage 0 local execution |
 | `contribute-discover.md` | discover | analyze (optional) | Search criteria and issue shortlist |
 | `contribute-release-notes.md` | release | release | Draft release notes for `--notes-file` |
 | `contribute-pr-body.md` | submit | submit | PR body for `--body-file` |
