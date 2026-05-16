@@ -81,11 +81,40 @@ Then:
 
 3. **Identify files to modify:** List every file that will need changes, and what kind of change (new code, modified logic, new tests, updated docs).
 
-4. **Check for related work:** Search for open and closed PRs that reference the issue. Use the bare issue number to catch all link styles (fixes, closes, resolves, refs):
+4. **Check for related work — run two searches, not one.**
+
+   **a) By issue number** (catches PRs that link to this issue). Use the
+   bare issue number to catch all link styles (fixes, closes, resolves, refs):
    ```bash
    gh search prs --repo <OWNER/REPO> "#<NUMBER>" --state=open
    gh search prs --repo <OWNER/REPO> "#<NUMBER>" --state=closed
    ```
+
+   **b) By specific target** (catches prior attempts that did not link the
+   issue, and is essential when the issue is a tracker spanning many
+   sub-tasks). For each function, class, or file you listed in Step 3,
+   search both open and closed PRs:
+   ```bash
+   # By function/symbol name
+   gh search prs --repo <OWNER/REPO> --state=closed "<TARGET_SYMBOL>"
+   # By file basename
+   gh search prs --repo <OWNER/REPO> --state=closed "<TARGET_FILE_BASENAME>"
+   ```
+
+   For each closed PR returned, read the closing comments
+   (`gh pr view <NUM> --repo <OWNER/REPO> --json comments,closedAt`).
+   Treat these as **BLOCKER-level risks** in the brief:
+   - Maintainer rejected the exact approach you are planning ("we don't
+     accept X", "please don't submit Y", "wrong direction").
+   - The target was closed as obsolete / superseded / out-of-scope.
+   - A merged PR already addressed the sub-task but the tracker issue is
+     still open.
+
+   **Why both searches matter:** a tracker issue with many sub-tasks
+   generates dozens of sub-PRs over time. Searching only by issue number
+   returns noise and misses function-specific prior attempts that did not
+   link the tracker. Searching by the specific function name catches those
+   even when the prior PR was not linked.
 
 ## Step 4: Present the Contribution Brief
 
