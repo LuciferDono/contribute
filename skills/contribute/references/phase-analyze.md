@@ -96,8 +96,10 @@ Then:
    search both open and closed PRs:
    ```bash
    # By function/symbol name
+   gh search prs --repo <OWNER/REPO> --state=open   "<TARGET_SYMBOL>"
    gh search prs --repo <OWNER/REPO> --state=closed "<TARGET_SYMBOL>"
    # By file basename
+   gh search prs --repo <OWNER/REPO> --state=open   "<TARGET_FILE_BASENAME>"
    gh search prs --repo <OWNER/REPO> --state=closed "<TARGET_FILE_BASENAME>"
    ```
 
